@@ -8,24 +8,25 @@ using System.Net.Sockets;
 using System.Text;
 using System.Windows.Forms;
 
-namespace PacketCreator
+namespace PacketCreatorhahahha
 {
+    //if you get this piece of gabage to work you have my respect
     public partial class MainForm : Form
     {
         private byte[] packet;
-        
+
         public MainForm()
         {
             InitializeComponent();
             InitializeProtocolComboBox();
         }
-        
+
         private void InitializeProtocolComboBox()
         {
             cmbProtocol.Items.AddRange(new object[] { "Ethernet", "IPv4", "IPv6", "TCP", "UDP", "ICMP", "Raw" });
             cmbProtocol.SelectedIndex = 0;
         }
-        
+//no 
         private void InitializeComponent()
         {
             this.cmbProtocol = new System.Windows.Forms.ComboBox();
@@ -36,38 +37,33 @@ namespace PacketCreator
             this.lblProtocol = new System.Windows.Forms.Label();
             this.lblHexPreview = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            
-            // lblProtocol
+
             this.lblProtocol.AutoSize = true;
             this.lblProtocol.Location = new System.Drawing.Point(12, 15);
             this.lblProtocol.Name = "lblProtocol";
             this.lblProtocol.Size = new System.Drawing.Size(55, 13);
             this.lblProtocol.Text = "Protocol:";
-            
-            // cmbProtocol
+
             this.cmbProtocol.FormattingEnabled = true;
             this.cmbProtocol.Location = new System.Drawing.Point(73, 12);
             this.cmbProtocol.Name = "cmbProtocol";
             this.cmbProtocol.Size = new System.Drawing.Size(121, 21);
             this.cmbProtocol.TabIndex = 0;
             this.cmbProtocol.SelectedIndexChanged += new System.EventHandler(this.cmbProtocol_SelectedIndexChanged);
-            
-            // pnlFields
+
             this.pnlFields.AutoScroll = true;
             this.pnlFields.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlFields.Location = new System.Drawing.Point(12, 39);
             this.pnlFields.Name = "pnlFields";
             this.pnlFields.Size = new System.Drawing.Size(560, 250);
             this.pnlFields.TabIndex = 1;
-            
-            // lblHexPreview
+
             this.lblHexPreview.AutoSize = true;
             this.lblHexPreview.Location = new System.Drawing.Point(12, 300);
             this.lblHexPreview.Name = "lblHexPreview";
             this.lblHexPreview.Size = new System.Drawing.Size(72, 13);
             this.lblHexPreview.Text = "Hex Preview:";
-            
-            // txtHexPreview
+
             this.txtHexPreview.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtHexPreview.Location = new System.Drawing.Point(12, 316);
             this.txtHexPreview.Multiline = true;
@@ -76,7 +72,7 @@ namespace PacketCreator
             this.txtHexPreview.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtHexPreview.Size = new System.Drawing.Size(560, 100);
             this.txtHexPreview.TabIndex = 2;
-            
+
             // btnCreatePacket
             this.btnCreatePacket.Location = new System.Drawing.Point(12, 422);
             this.btnCreatePacket.Name = "btnCreatePacket";
@@ -85,7 +81,7 @@ namespace PacketCreator
             this.btnCreatePacket.Text = "Create Packet";
             this.btnCreatePacket.UseVisualStyleBackColor = true;
             this.btnCreatePacket.Click += new System.EventHandler(this.btnCreatePacket_Click);
-            
+
             // btnSendPacket
             this.btnSendPacket.Location = new System.Drawing.Point(118, 422);
             this.btnSendPacket.Name = "btnSendPacket";
@@ -94,7 +90,7 @@ namespace PacketCreator
             this.btnSendPacket.Text = "Send Packet";
             this.btnSendPacket.UseVisualStyleBackColor = true;
             this.btnSendPacket.Click += new System.EventHandler(this.btnSendPacket_Click);
-            
+
             // MainForm
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -111,7 +107,7 @@ namespace PacketCreator
             this.ResumeLayout(false);
             this.PerformLayout();
         }
-        
+
         private System.Windows.Forms.ComboBox cmbProtocol;
         private System.Windows.Forms.Panel pnlFields;
         private System.Windows.Forms.Button btnCreatePacket;
@@ -119,18 +115,18 @@ namespace PacketCreator
         private System.Windows.Forms.Button btnSendPacket;
         private System.Windows.Forms.Label lblProtocol;
         private System.Windows.Forms.Label lblHexPreview;
-        
+
         private Dictionary<string, List<FieldControl>> protocolFields = new Dictionary<string, List<FieldControl>>();
-        
+
         private void cmbProtocol_SelectedIndexChanged(object sender, EventArgs e)
         {
             pnlFields.Controls.Clear();
             string protocol = cmbProtocol.SelectedItem.ToString();
-            
+
             if (!protocolFields.ContainsKey(protocol))
             {
                 List<FieldControl> fields = new List<FieldControl>();
-                
+
                 switch (protocol)
                 {
                     case "Ethernet":
@@ -194,10 +190,13 @@ namespace PacketCreator
                         fields.Add(new FieldControl("Raw Data", "", 0, FieldType.HEX));
                         break;
                 }
-                
+// this is bad //
+// this is really really bad
+// have fun with error troubleshooting
+// ports should be good tho 
                 protocolFields[protocol] = fields;
             }
-            
+
             int yPos = 10;
             foreach (var field in protocolFields[protocol])
             {
@@ -206,14 +205,14 @@ namespace PacketCreator
                 yPos += field.Height + 5;
             }
         }
-        
+
         private void btnCreatePacket_Click(object sender, EventArgs e)
         {
             try
             {
                 string protocol = cmbProtocol.SelectedItem.ToString();
                 List<FieldControl> fields = protocolFields[protocol];
-                
+
                 using (MemoryStream ms = new MemoryStream())
                 {
                     foreach (var field in fields)
@@ -221,10 +220,10 @@ namespace PacketCreator
                         byte[] fieldBytes = field.GetBytes();
                         ms.Write(fieldBytes, 0, fieldBytes.Length);
                     }
-                    
+
                     packet = ms.ToArray();
                 }
-                
+
                 UpdateHexPreview();
                 MessageBox.Show("Packet created successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -233,7 +232,7 @@ namespace PacketCreator
                 MessageBox.Show($"Error creating packet: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        
+
         private void UpdateHexPreview()
         {
             if (packet == null || packet.Length == 0)
@@ -241,10 +240,10 @@ namespace PacketCreator
                 txtHexPreview.Text = "No packet data available.";
                 return;
             }
-            
+
             StringBuilder hexBuilder = new StringBuilder();
             StringBuilder asciiBuilder = new StringBuilder();
-            
+
             for (int i = 0; i < packet.Length; i++)
             {
                 if (i % 16 == 0)
@@ -258,15 +257,15 @@ namespace PacketCreator
                     }
                     hexBuilder.AppendFormat("{0:X4}: ", i);
                 }
-                
+
                 hexBuilder.AppendFormat("{0:X2} ", packet[i]);
-                
+
                 if (packet[i] >= 32 && packet[i] <= 126)
                     asciiBuilder.Append((char)packet[i]);
                 else
                     asciiBuilder.Append('.');
             }
-            
+
             int remaining = 16 - (packet.Length % 16);
             if (remaining < 16)
             {
@@ -275,13 +274,13 @@ namespace PacketCreator
                     hexBuilder.Append("   ");
                 }
             }
-            
+
             hexBuilder.Append("  ");
             hexBuilder.Append(asciiBuilder.ToString());
-            
+
             txtHexPreview.Text = hexBuilder.ToString();
         }
-        
+
         private void btnSendPacket_Click(object sender, EventArgs e)
         {
             if (packet == null || packet.Length == 0)
@@ -289,21 +288,21 @@ namespace PacketCreator
                 MessageBox.Show("Please create a packet first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            
+
             try
             {
                 string protocol = cmbProtocol.SelectedItem.ToString();
-                
+
                 using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.IP))
                 {
                     socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.HeaderIncluded, true);
-                    
+
                     IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 0);
                     socket.Connect(endpoint);
-                    
+
                     socket.Send(packet);
                 }
-                
+
                 MessageBox.Show("Packet sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -312,7 +311,7 @@ namespace PacketCreator
             }
         }
     }
-    
+
     public enum FieldType
     {
         BYTE,
@@ -327,71 +326,71 @@ namespace PacketCreator
         NIBBLE,
         BITS
     }
-    
+
     public class FieldControl : Panel
     {
         private Label lblName;
         private TextBox txtValue;
         private FieldType fieldType;
         private int byteLength;
-        
+
         public FieldControl(string name, string defaultValue, int byteLength, FieldType fieldType)
         {
             this.fieldType = fieldType;
             this.byteLength = byteLength;
-            
+
             this.Size = new Size(540, 30);
-            
+
             lblName = new Label();
             lblName.AutoSize = true;
             lblName.Location = new Point(0, 8);
             lblName.Text = name + ":";
             lblName.Width = 130;
-            
+
             txtValue = new TextBox();
             txtValue.Location = new Point(140, 5);
             txtValue.Size = new Size(400, 20);
             txtValue.Text = defaultValue;
-            
+
             this.Controls.Add(lblName);
             this.Controls.Add(txtValue);
         }
-        
+// i was warned of a memory overflow? not seeing it here
         public byte[] GetBytes()
         {
             string value = txtValue.Text.Trim();
-            
+
             switch (fieldType)
             {
                 case FieldType.BYTE:
                     return new byte[] { Convert.ToByte(value, 16) };
-                    
+
                 case FieldType.SHORT:
                     ushort shortVal = Convert.ToUInt16(value, 16);
                     return new byte[] { (byte)(shortVal >> 8), (byte)(shortVal & 0xFF) };
-                    
+
                 case FieldType.INT:
                     uint intVal = Convert.ToUInt32(value, 16);
-                    return new byte[] { 
-                        (byte)(intVal >> 24), 
-                        (byte)((intVal >> 16) & 0xFF), 
-                        (byte)((intVal >> 8) & 0xFF), 
-                        (byte)(intVal & 0xFF) 
+                    return new byte[] {
+                        (byte)(intVal >> 24),
+                        (byte)((intVal >> 16) & 0xFF),
+                        (byte)((intVal >> 8) & 0xFF),
+                        (byte)(intVal & 0xFF)
                     };
-                    
+
                 case FieldType.LONG:
                     ulong longVal = Convert.ToUInt64(value, 16);
-                    return new byte[] { 
-                        (byte)(longVal >> 56), 
-                        (byte)((longVal >> 48) & 0xFF), 
-                        (byte)((longVal >> 40) & 0xFF), 
+                    return new byte[] {
+                        (byte)(longVal >> 56),
+                        (byte)((longVal >> 48) & 0xFF),
+                        (byte)((longVal >> 40) & 0xFF),
                         (byte)((longVal >> 32) & 0xFF),
-                        (byte)((longVal >> 24) & 0xFF), 
-                        (byte)((longVal >> 16) & 0xFF), 
-                        (byte)((longVal >> 8) & 0xFF), 
-                        (byte)(longVal & 0xFF) 
+                        (byte)((longVal >> 24) & 0xFF),
+                        (byte)((longVal >> 16) & 0xFF),
+                        (byte)((longVal >> 8) & 0xFF),
+                        (byte)(longVal & 0xFF)
                     };
-                    
+
                 case FieldType.MAC:
                     string[] macParts = value.Split(':');
                     byte[] macBytes = new byte[6];
@@ -400,13 +399,13 @@ namespace PacketCreator
                         macBytes[i] = Convert.ToByte(macParts[i], 16);
                     }
                     return macBytes;
-                    
+
                 case FieldType.IP:
                     return IPAddress.Parse(value).GetAddressBytes();
-                    
+
                 case FieldType.IPV6:
                     return IPAddress.Parse(value).GetAddressBytes();
-                    
+
                 case FieldType.HEX:
                     value = value.Replace(" ", "");
                     byte[] hexBytes = new byte[value.Length / 2];
@@ -415,24 +414,24 @@ namespace PacketCreator
                         hexBytes[i] = Convert.ToByte(value.Substring(i * 2, 2), 16);
                     }
                     return hexBytes;
-                    
+
                 case FieldType.DATA:
                     return Encoding.ASCII.GetBytes(value);
-                    
+
                 case FieldType.NIBBLE:
                     byte nibble = Convert.ToByte(value, 16);
                     return new byte[] { nibble };
-                    
+
                 case FieldType.BITS:
                     byte bits = Convert.ToByte(value, 2);
                     return new byte[] { bits };
-                    
+
                 default:
                     return new byte[0];
             }
         }
     }
-    
+
     static class Program
     {
         [STAThread]
